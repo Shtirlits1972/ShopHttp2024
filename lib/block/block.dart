@@ -32,6 +32,21 @@ class DataCubit extends Cubit<Keeper> {
     _RowCartRowListGetQty();
   }
 
+  CartRowListDel(OrderRow row) {
+    int index = -1;
+    for (int i = 0; i < state.CartRowList.length; i++) {
+      if (state.CartRowList[i].product.Id == row.product.Id) {
+        state.CartRowList[i].qty--;
+        index = i;
+        break;
+      }
+    }
+    if (state.CartRowList[index].qty <= 0) {
+      CartRowListRemoveByIndex(index);
+    }
+    _RowCartRowListGetQty();
+  }
+
   CartRowListAdd(OrderRow row) {
     bool flag = false;
     for (int i = 0; i < state.CartRowList.length; i++) {
@@ -47,7 +62,12 @@ class DataCubit extends Cubit<Keeper> {
     _RowCartRowListGetQty();
   }
 
-  CartRowListAddDel(int productId) {
+  CartRowListRemoveByIndex(int index) {
+    state.CartRowList.removeAt(index);
+    _RowCartRowListGetQty();
+  }
+
+  CartRowListRemoveDismiss(int productId) {
     int index = -1;
     for (int i = 0; i < state.CartRowList.length; i++) {
       if (state.CartRowList[i].product.Id == productId) {

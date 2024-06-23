@@ -5,6 +5,7 @@ import 'package:shop_http_2024/constants.dart';
 import 'package:shop_http_2024/crud/order_crud.dart';
 import 'package:shop_http_2024/model/order_head.dart';
 import 'package:shop_http_2024/model/order_row.dart';
+import 'package:shop_http_2024/model/order_row_res.dart';
 
 class OrderView extends StatefulWidget {
   OrderView({super.key, required this.orderHead});
@@ -16,10 +17,12 @@ class OrderView extends StatefulWidget {
 }
 
 class _OrderViewState extends State<OrderView> {
+  GetOrderRowRes orderRowRes = GetOrderRowRes.empty('', 0);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         centerTitle: true,
         title: Text(
           '${widget.orderHead.OrderNumber} ${dataFormatShort.format(widget.orderHead.OrderData)}',
@@ -27,55 +30,61 @@ class _OrderViewState extends State<OrderView> {
         ),
       ),
       body: BlocBuilder<DataCubit, Keeper>(builder: (context, state) {
-        Widget central = widget.orderHead.order_rows.isEmpty
+        if (widget.orderHead.order_rows.isNotEmpty) {
+          orderRowRes = GetOrderRowRes('OK', 200, widget.orderHead.order_rows);
+        }
+        int y33 = 0;
+        Widget central = orderRowRes.order_row_list.isEmpty &&
+                orderRowRes.status == 0 &&
+                orderRowRes.message.isEmpty
             ? CircularProgressIndicator(
                 color: Colors.blue,
               )
-            : GetCentralWidget(widget.orderHead.order_rows);
+            : GetCentralWidget(orderRowRes);
 
-        if (widget.orderHead.order_rows.isEmpty) {
-          OrderCrud.getOrderRowList(
-                  context.read<DataCubit>().getToken, widget.orderHead.Id)
-              .then((value) {
-            if (value.order_row_list.isNotEmpty && value.status == 200) {
-              widget.orderHead.order_rows = value.order_row_list;
-
-              if (widget.orderHead.Id > 0) {
-                context.read<DataCubit>().OrderHeadResUpd(widget.orderHead);
-                setState(() {});
-              }
-            }
-          });
-        }
         return Center(child: central);
       }),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(color: Colors.blue),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            'Total SUMMA: ${widget.orderHead.totalSumma()}',
-            style: txt20,
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Total SUMMA: ${widget.orderHead.totalSumma()} \$',
+                style: txt20,
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/OrderForm', arguments: 2);
+              },
+              child: Text(
+                'к заказам',
+                style: txt20,
+              ),
+            )
+          ],
         ),
       ),
     );
   }
 
-  Widget GetCentralWidget(List<OrderRow> order_row_list) {
+  Widget GetCentralWidget(GetOrderRowRes orderRowRes) {
     Widget central = Text(
-      'No Data',
+      '${orderRowRes.message} status: ${orderRowRes.status}',
       style: txt15,
     );
-    int y52 = 0;
 
-    if (order_row_list.isNotEmpty) {
+    if (orderRowRes.order_row_list.isNotEmpty && orderRowRes.status == 200) {
       central = ListView.separated(
         separatorBuilder: (context, index) => const Divider(
           color: Colors.black,
           thickness: 1,
         ),
-        itemCount: order_row_list.length,
+        itemCount: orderRowRes.order_row_list.length,
         itemBuilder: (context, index) {
           return ListTile(
             leading: CircleAvatar(
@@ -90,17 +99,17 @@ class _OrderViewState extends State<OrderView> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  order_row_list[index].product.ProductName,
+                  orderRowRes.order_row_list[index].product.ProductName,
                   style: txt15,
                 ),
               ],
             ),
             trailing: Text(
-              '${order_row_list[index].qty} шт',
+              '${orderRowRes.order_row_list[index].qty} шт',
               style: txt15,
             ),
             subtitle: Text(
-              'всего: ${order_row_list[index].qty}шт Х ${order_row_list[index].product.Price} = ${order_row_list[index].qty * order_row_list[index].product.Price}',
+              'всего: ${orderRowRes.order_row_list[index].qty}шт Х ${orderRowRes.order_row_list[index].product.Price} = ${orderRowRes.order_row_list[index].qty * orderRowRes.order_row_list[index].product.Price}',
               style: txt15,
             ),
           );
@@ -108,5 +117,24 @@ class _OrderViewState extends State<OrderView> {
       );
     }
     return central;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (orderRowRes.order_row_list.isEmpty && orderRowRes.status == 0) {
+      OrderCrud.getOrderRowList(
+              context.read<DataCubit>().getToken, widget.orderHead.Id)
+          .then((value) {
+        print(value);
+        widget.orderHead.order_rows = value.order_row_list;
+        orderRowRes = value;
+        if (widget.orderHead.Id > 0) {
+          context.read<DataCubit>().OrderHeadResUpd(widget.orderHead);
+        }
+        setState(() {});
+      });
+    }
   }
 }

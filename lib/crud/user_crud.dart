@@ -48,8 +48,11 @@ class UserCrud {
     String token = '';
 
     try {
-      var response = await http.post(Uri.https(host,
-          '/api/Account/LoginOutside', {'Email': Email, 'Password': Password}));
+      var response = await http.post(
+        Uri.https(host, '/api/Account/LoginOutside',
+            {'Email': Email, 'Password': Password}),
+        // headers: {'Authorization': 'Basic MTExODI3NDM6NjAtZGF5ZnJlZXRyaWFs'}
+      );
 
       if (response.statusCode == 200) {
         token = response.body;

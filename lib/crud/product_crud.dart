@@ -13,7 +13,7 @@ class ProductCRUD {
     getProductRes result = getProductRes.empty();
 
     try {
-      var response = await http.get(Uri.http(host, '/api/Products'));
+      var response = await http.get(Uri.https(host, '/api/Products'));
 
       result.status = response.statusCode;
 
