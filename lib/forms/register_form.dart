@@ -4,6 +4,7 @@ import 'package:shop_http_2024/block/block.dart';
 import 'package:shop_http_2024/constants.dart';
 import 'package:shop_http_2024/crud/user_crud.dart';
 import 'package:shop_http_2024/widget/alert.dart';
+import 'package:shop_http_2024/widget/check_box_user.dart';
 
 class RegisterForm extends StatefulWidget {
   RegisterForm({Key? key}) : super(key: key);
@@ -20,7 +21,7 @@ class _RegisterFormState extends State<RegisterForm> {
     TextEditingController loginController = TextEditingController();
     TextEditingController passController = TextEditingController();
     TextEditingController displayNameController = TextEditingController();
-
+    bool isCheckedFrm = false;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -104,6 +105,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   ),
                 ],
               ),
+              CheckboxWidget(callback: (value) => isCheckedFrm = value),
               MaterialButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/');

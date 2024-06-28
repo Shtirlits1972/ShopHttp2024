@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_http_2024/block/block.dart';
 import 'package:shop_http_2024/constants.dart';
+import 'package:shop_http_2024/crud/param_crud.dart';
 import 'package:shop_http_2024/crud/user_crud.dart';
 import 'package:shop_http_2024/widget/alert.dart';
+import 'package:shop_http_2024/widget/check_box_user.dart';
 
 class LoginForm extends StatefulWidget {
   LoginForm({Key? key}) : super(key: key);
@@ -18,6 +20,7 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     TextEditingController loginController = TextEditingController();
     TextEditingController passController = TextEditingController();
+    bool isCheckedFrm = false;
 
     loginController.text = 'petia@mail.ru';
     passController.text = '123';
@@ -74,6 +77,19 @@ class _LoginFormState extends State<LoginForm> {
                             print(token);
 
                             if (token.trim().isNotEmpty) {
+//===============================
+                              if (isCheckedFrm) {
+                                ParamCrud.upd('token', token.trim());
+
+                                ParamCrud.upd(
+                                    'remember', isCheckedFrm.toString());
+                                ParamCrud.upd(
+                                    'login', loginController.text.trim());
+                                ParamCrud.upd(
+                                    'password', passController.text.trim());
+                              }
+
+//===============================
                               Navigator.pushNamed(context, '/ProductListForm',
                                   arguments: 0);
                             } else {
@@ -88,6 +104,7 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                   ],
                 ),
+                CheckboxWidget(callback: (value) => isCheckedFrm = value),
                 MaterialButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/RegisterForm');

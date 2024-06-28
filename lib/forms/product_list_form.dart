@@ -28,6 +28,28 @@ class _ProductListFormState extends State<ProductListForm> {
           'товары',
           style: txt20,
         ),
+        // leading: IconButton(
+        //   onPressed: () {
+        //     print('filter category');
+        //   },
+        //   icon: const Icon(Icons.filter_alt_outlined),
+        // ),
+        // actions: <Widget>[
+        //   IconButton(
+        //     onPressed: () {
+        //       print('filter category');
+        //     },
+        //     icon: const Icon(Icons.filter_alt_outlined),
+        //     tooltip: 'Filters',
+        //   ),
+        //   IconButton(
+        //     onPressed: () {
+        //       print('refresh product');
+        //     },
+        //     icon: const Icon(Icons.refresh_outlined),
+        //     tooltip: 'Refresh',
+        //   )
+        // ],
       ),
       body: BlocBuilder<DataCubit, Keeper>(builder: (context, state) {
         Widget central =

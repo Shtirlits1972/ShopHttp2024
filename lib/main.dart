@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shop_http_2024/app_router.dart';
 import 'package:shop_http_2024/constants.dart';
+import 'package:shop_http_2024/crud/init_crud.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  InitCrud.init();
   runApp(const MyApp());
 }
 
