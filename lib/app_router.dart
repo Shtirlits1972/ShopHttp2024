@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_http_2024/block/block.dart';
@@ -16,6 +18,7 @@ class AppRouter {
   Route onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       case '/':
+        const bool isRedirect = false;
         return MaterialPageRoute(
           builder: (context) => BlocProvider.value(
             value: cubit,
@@ -60,7 +63,6 @@ class AppRouter {
             ),
           ),
         );
-//
 
       case '/OrderView':
         final OrderHead head = routeSettings.arguments as OrderHead;
@@ -74,6 +76,7 @@ class AppRouter {
         );
 
       default:
+        const bool isRedirect = true;
         return MaterialPageRoute(
           builder: (context) => BlocProvider.value(
             value: cubit,

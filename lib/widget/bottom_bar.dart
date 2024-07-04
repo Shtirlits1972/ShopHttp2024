@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_http_2024/block/block.dart';
+import 'package:shop_http_2024/crud/param_crud.dart';
 import 'package:shop_http_2024/crud/user_crud.dart';
 import 'package:shop_http_2024/model/get_order_head_res.dart';
 
@@ -82,7 +83,9 @@ class _BottomBarState extends State<BottomBar> {
                 context.read<DataCubit>().setToken('');
                 GetOrderHeadRes headRes = GetOrderHeadRes.empty();
                 context.read<DataCubit>().setOrderHeadRes(headRes);
-                Navigator.pushNamed(context, '/');
+                context.read<DataCubit>().setIsRedirect(false);
+                ParamCrud.upd('token', '');
+                Navigator.pushNamed(context, '/', arguments: false);
               }
             },
           );

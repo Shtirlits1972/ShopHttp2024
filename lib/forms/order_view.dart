@@ -53,7 +53,7 @@ class _OrderViewState extends State<OrderView> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                'Total SUMMA: ${widget.orderHead.totalSumma()} \$',
+                'Total SUMMA: ${widget.orderHead.totalSumma().toStringAsFixed(2)} \$',
                 style: txt20,
               ),
             ),
@@ -109,7 +109,7 @@ class _OrderViewState extends State<OrderView> {
               style: txt15,
             ),
             subtitle: Text(
-              'всего: ${orderRowRes.order_row_list[index].qty}шт Х ${orderRowRes.order_row_list[index].product.Price} = ${orderRowRes.order_row_list[index].qty * orderRowRes.order_row_list[index].product.Price}',
+              'всего: ${orderRowRes.order_row_list[index].qty}шт Х ${orderRowRes.order_row_list[index].product.Price} = ${(orderRowRes.order_row_list[index].qty * orderRowRes.order_row_list[index].product.Price).toStringAsFixed(2)}',
               style: txt15,
             ),
           );

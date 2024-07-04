@@ -186,6 +186,11 @@ class _CartFormState extends State<CartForm> {
                                   OrderHead head = await OrderCrud.OrderCreate(
                                       context.read<DataCubit>().getToken,
                                       context.read<DataCubit>().getCartRowList);
+
+                                  context
+                                      .read<DataCubit>()
+                                      .OrderHeadResAddNew(head);
+
                                   print(head);
                                   int g = 0;
                                   //=============================

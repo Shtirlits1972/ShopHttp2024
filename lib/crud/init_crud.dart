@@ -11,7 +11,7 @@ class InitCrud {
         'INSERT INTO [Params] (NameParams, ValueParams) values("token", "");';
 
     String insRemember =
-        'INSERT INTO [Params] (NameParams, ValueParams) values("remember", "");';
+        'INSERT INTO [Params] (NameParams, ValueParams) values("remember", "true");';
 
     String insLogin =
         'INSERT INTO [Params] (NameParams, ValueParams) values("login", "");';

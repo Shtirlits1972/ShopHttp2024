@@ -15,9 +15,16 @@ class Keeper {
   List<OrderRow> CartRowList = [];
   int CartRowQty = 0;
   double summa = 0;
+  bool isRedirect = true;
 }
 
 class DataCubit extends Cubit<Keeper> {
+  bool get getIsRedirect => state.isRedirect;
+
+  setIsRedirect(bool NewIsRedirect) {
+    state.isRedirect = NewIsRedirect;
+  }
+
   //================  CartRowList  ==============
   List<OrderRow> get getCartRowList => state.CartRowList;
 
@@ -116,10 +123,18 @@ class DataCubit extends Cubit<Keeper> {
 
 //  =============  CartRowList  =======================
 
+  //===============  OrderHead  ================
+
   GetOrderHeadRes get getOrderHeadRes => state.orderHeadRes;
 
   setOrderHeadRes(GetOrderHeadRes result) {
     state.orderHeadRes = result;
+  }
+
+  OrderHeadResAddNew(OrderHead head) {
+    state.orderHeadRes.OrderHeadList.add(head);
+    state.orderHeadRes.status = 200;
+    state.orderHeadRes.message = 'OK';
   }
 
   OrderHead getOrderHeadById(int Id) {
@@ -144,6 +159,8 @@ class DataCubit extends Cubit<Keeper> {
     }
   }
 
+  //===============  OrderHead  ================
+//==============   getProductRes  =========================
   getProductRes get getProductRess => state.productRes;
 
   setProductRes(getProductRes result) {
