@@ -123,50 +123,58 @@ class _LoginFormState extends State<LoginForm> {
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
                   height: 50,
-                  child: ElevatedButton(
-                    child: Text(
-                      'Login',
-                      style: txt20,
-                    ),
-                    onPressed: () async {
-                      print(
-                          'Login: ${loginController.text}, Password: ${passController.text}');
-                      context.read<DataCubit>().setToken('');
-                      String token = await UserCrud.autorize(
-                          loginController.text, passController.text);
+                  child: Container(
+                    width: 250,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                      ),
+                      child: Text(
+                        'Login',
+                        style: txt20,
+                      ),
+                      onPressed: () async {
+                        print(
+                            'Login: ${loginController.text}, Password: ${passController.text}');
+                        context.read<DataCubit>().setToken('');
+                        String token = await UserCrud.autorize(
+                            loginController.text, passController.text);
 
-                      context.read<DataCubit>().setToken(token);
-                      print(token);
+                        context.read<DataCubit>().setToken(token);
+                        print(token);
 
-                      if (token.trim().isNotEmpty) {
-                        //===============================
-                        if (isCheckedFrm) {
-                          int h = 0;
-                          int cnt = await ParamCrud.upd('token', token.trim());
+                        if (token.trim().isNotEmpty) {
+                          //===============================
+                          if (isCheckedFrm) {
+                            int h = 0;
+                            int cnt =
+                                await ParamCrud.upd('token', token.trim());
 
-                          await ParamCrud.upd(
-                              'remember', isCheckedFrm.toString());
-                          await ParamCrud.upd(
-                              'login', loginController.text.trim());
-                          await ParamCrud.upd(
-                              'password', passController.text.trim());
+                            await ParamCrud.upd(
+                                'remember', isCheckedFrm.toString());
+                            await ParamCrud.upd(
+                                'login', loginController.text.trim());
+                            await ParamCrud.upd(
+                                'password', passController.text.trim());
 
-                          String token2 = await ParamCrud.getValue('token');
+                            String token2 = await ParamCrud.getValue('token');
 
-                          int h2 = 0;
+                            int h2 = 0;
+                          } else {
+                            ParamCrud.clear();
+                          }
+
+                          //===============================
+                          Navigator.pushNamed(context, '/ProductListForm',
+                              arguments: 0);
                         } else {
-                          ParamCrud.clear();
+                          print('неверный логин и(или) пароль!');
+
+                          showMyDialog(
+                              context, 'неверный логин и(или) пароль!');
                         }
-
-                        //===============================
-                        Navigator.pushNamed(context, '/ProductListForm',
-                            arguments: 0);
-                      } else {
-                        print('неверный логин и(или) пароль!');
-
-                        showMyDialog(context, 'неверный логин и(или) пароль!');
-                      }
-                    },
+                      },
+                    ),
                   ),
                 ),
               ),

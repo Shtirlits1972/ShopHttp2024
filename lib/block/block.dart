@@ -1,6 +1,8 @@
 //import 'dart:nativewrappers/_internal/vm/lib/core_patch.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shop_http_2024/model/category.dart';
+import 'package:shop_http_2024/model/get_category_res.dart';
 import 'package:shop_http_2024/model/order_head.dart';
 import 'package:shop_http_2024/model/order_row.dart';
 import 'package:shop_http_2024/model/get_order_head_res.dart';
@@ -16,9 +18,12 @@ class Keeper {
   int CartRowQty = 0;
   double summa = 0;
   bool isRedirect = true;
+
+  GetCategoryRes getCategoryRes = GetCategoryRes.empty();
 }
 
 class DataCubit extends Cubit<Keeper> {
+  //===================================================
   bool get getIsRedirect => state.isRedirect;
 
   setIsRedirect(bool NewIsRedirect) {
@@ -160,6 +165,14 @@ class DataCubit extends Cubit<Keeper> {
   }
 
   //===============  OrderHead  ================
+  //****************  Category  *********************
+  GetCategoryRes get getCategoryRes => state.getCategoryRes;
+
+  setGetCategoryRes(GetCategoryRes catRes) {
+    state.getCategoryRes = catRes;
+  }
+
+  //****************  Category ***********************
 //==============   getProductRes  =========================
   getProductRes get getProductRess => state.productRes;
 

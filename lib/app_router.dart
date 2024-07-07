@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_http_2024/block/block.dart';
 import 'package:shop_http_2024/forms/cart_form.dart';
+import 'package:shop_http_2024/forms/category_form.dart';
 import 'package:shop_http_2024/forms/login_form.dart';
 import 'package:shop_http_2024/forms/order_head_form.dart';
 import 'package:shop_http_2024/forms/order_view.dart';
@@ -72,6 +73,15 @@ class AppRouter {
             child: OrderView(
               orderHead: head,
             ),
+          ),
+        );
+//
+
+      case '/CategoryForm':
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider.value(
+            value: cubit,
+            child: CategoryForm(),
           ),
         );
 

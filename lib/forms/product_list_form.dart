@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_http_2024/block/block.dart';
 import 'package:shop_http_2024/constants.dart';
+import 'package:shop_http_2024/model/category.dart';
 import 'package:shop_http_2024/model/get_products_res.dart';
 import 'package:shop_http_2024/crud/product_crud.dart';
 import 'package:shop_http_2024/model/order_row.dart';
+import 'package:shop_http_2024/model/product.dart';
 import 'package:shop_http_2024/widget/bottom_bar.dart';
 
 class ProductListForm extends StatefulWidget {
@@ -34,22 +36,52 @@ class _ProductListFormState extends State<ProductListForm> {
         //   },
         //   icon: const Icon(Icons.filter_alt_outlined),
         // ),
-        // actions: <Widget>[
-        //   IconButton(
-        //     onPressed: () {
-        //       print('filter category');
-        //     },
-        //     icon: const Icon(Icons.filter_alt_outlined),
-        //     tooltip: 'Filters',
-        //   ),
-        //   IconButton(
-        //     onPressed: () {
-        //       print('refresh product');
-        //     },
-        //     icon: const Icon(Icons.refresh_outlined),
-        //     tooltip: 'Refresh',
-        //   )
-        // ],
+        actions: <Widget>[
+          PopupMenuButton<String>(
+              itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
+                    const PopupMenuItem<String>(
+                      value: 'filter',
+                      child: Row(
+                        children: [
+                          Text(
+                            'фильтр',
+                          ),
+                          Icon(Icons.filter_alt_outlined),
+                        ],
+                      ),
+                    ),
+                    // new PopupMenuItem<int>(
+                    //     value: 2, child: new Text('Item Two')),
+                    // new PopupMenuItem<int>(
+                    //     value: 3, child: new Text('Item Three')),
+                    // new PopupMenuItem<int>(
+                    //     value: 4, child: new Text('I am Item Four'))
+                  ],
+              onSelected: (String value) {
+                print(value);
+
+                if (value == 'filter') {
+                  Navigator.pushNamed(
+                    context,
+                    '/CategoryForm',
+                  );
+                }
+              })
+          //   IconButton(
+          //     onPressed: () {
+          //       print('filter category');
+          //     },
+          //     icon: const Icon(Icons.filter_alt_outlined),
+          //     tooltip: 'Filters',
+          //   ),
+          //   IconButton(
+          //     onPressed: () {
+          //       print('refresh product');
+          //     },
+          //     icon: const Icon(Icons.refresh_outlined),
+          //     tooltip: 'Refresh',
+          //   )
+        ],
       ),
       body: BlocBuilder<DataCubit, Keeper>(builder: (context, state) {
         Widget central =
@@ -57,7 +89,8 @@ class _ProductListFormState extends State<ProductListForm> {
                 ? CircularProgressIndicator(
                     color: Colors.blue,
                   )
-                : GetCentralWidget(context.read<DataCubit>().getProductRess);
+                : GetCentralWidget(context.read<DataCubit>().getProductRess,
+                    context.read<DataCubit>().getCategoryRes.categoryes);
 
         if (context.read<DataCubit>().getProductRess.isEmpty() &&
             context.read<DataCubit>().getProductRess.status != 200) {
@@ -73,7 +106,24 @@ class _ProductListFormState extends State<ProductListForm> {
     );
   }
 
-  Widget GetCentralWidget(getProductRes result) {
+  Widget GetCentralWidget(getProductRes result, List<Category> categoryes) {
+    List<Product> productList = [];
+    bool flag = true;
+    categoryes.forEach((category) {
+      if (category.isChecked) {
+        result.products.forEach((product) {
+          if (product.CategoryId == category.id) {
+            productList.add(product);
+            flag = false;
+          }
+        });
+      }
+    });
+
+    if (flag) {
+      productList = result.products;
+    }
+
     Widget central = Text(
       'No Data',
       style: txt15,
@@ -103,14 +153,14 @@ class _ProductListFormState extends State<ProductListForm> {
           color: Colors.black,
           thickness: 1,
         ),
-        itemCount: result.products.length,
+        itemCount: productList.length,
         itemBuilder: (context, index) {
           Widget fotoWidget = Image.asset("assets/images/NoFoto.jpg");
 
-          if (result.products[index].Foto.trim().isNotEmpty &&
-              result.products[index].Foto.trim() != 'X') {
+          if (productList[index].Foto.trim().isNotEmpty &&
+              productList[index].Foto.trim() != 'X') {
             fotoWidget = Image.network(
-                'https://$host/images/product/${result.products[index].Id}/${result.products[index].Foto}',
+                'https://$host/images/product/${productList[index].Id}/${productList[index].Foto}',
                 width: MediaQuery.of(context).size.width - 10,
                 fit: BoxFit.fill);
           }
@@ -126,7 +176,7 @@ class _ProductListFormState extends State<ProductListForm> {
             ),
             title: Text(
               softWrap: true,
-              result.products[index].ProductName,
+              productList[index].ProductName,
               style: txt20,
             ),
             trailing: Row(
@@ -134,7 +184,7 @@ class _ProductListFormState extends State<ProductListForm> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  result.products[index].Price.toStringAsFixed(2),
+                  productList[index].Price.toStringAsFixed(2),
                   style: txt20,
                 ),
                 SizedBox(
@@ -150,10 +200,10 @@ class _ProductListFormState extends State<ProductListForm> {
                   child: Center(
                     child: TextButton(
                       onPressed: () {
-                        OrderRow row = OrderRow(0, result.products[index], 1);
+                        OrderRow row = OrderRow(0, productList[index], 1);
                         context.read<DataCubit>().CartRowListAdd(row);
                         print(
-                            'товар ${result.products[index].ProductName} добавлен в корзину');
+                            'товар ${productList[index].ProductName} добавлен в корзину');
                         print(context.read<DataCubit>().getCartRowList);
                         setState(() {});
                       },
@@ -167,7 +217,7 @@ class _ProductListFormState extends State<ProductListForm> {
               ],
             ),
             subtitle: Text(
-              result.products[index].CategoryName,
+              productList[index].CategoryName,
               style: txt15,
             ),
             children: [
